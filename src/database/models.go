@@ -1,22 +1,35 @@
 package database
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
+
+// OwnerDetails represents the details of an owner
+type OwnerDetails struct {
+	gorm.Model
+	Name  string `json:"name" gorm:"type:varchar(100);not null"`         // Added type for better database control
+	Email string `json:"email" gorm:"type:varchar(100);not null;unique"` // Added type and unique constraints
+	Phone string `json:"phone" gorm:"type:varchar(20);not null"`         // Added type for better database control
+}
 
 // Coordinates represents latitude and longitude values
 type Coordinates struct {
-	Latitude  float64
-	Longitude float64
+	Latitude  float64 `json:"latitude"`  // Latitude value
+	Longitude float64 `json:"longitude"` // Longitude value
 }
 
-// FlatDetails represents details of a flat
+// Note: Ensure the necessary PostgreSQL extensions are enabled
+// CREATE EXTENSION cube;
+// CREATE EXTENSION earthdistance;
+
+// FlatDetails represents the details of a flat
 type FlatDetails struct {
 	gorm.Model
-	Name            string      `gorm:"not null"`
-	Email           string      `gorm:"not null"`
-	Phone           string      `gorm:"not null"`
-	Location        Coordinates `gorm:"not null"`
-	Address         string
-	Rent            float64
-	SecurityDeposit float64
-	LookingFor      string
+	OwnerID         uint         `json:"owner_id" gorm:"not null"`                                                       // Foreign key to OwnerDetails
+	Owner           OwnerDetails `json:"owner" gorm:"foreignkey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"` // Owner relationship
+	Location        Coordinates  `json:"location" gorm:"embedded;embeddedPrefix:location_"`                              // Embedded coordinates
+	Address         string       `json:"address" gorm:"type:varchar(255);not null"`                                      // Address of the flat
+	Rent            float64      `json:"rent" gorm:"type:decimal(10,2);not null"`                                        // Rent amount
+	SecurityDeposit float64      `json:"security_deposit" gorm:"type:decimal(10,2);not null"`                            // Security deposit amount
+	LookingFor      string       `json:"looking_for" gorm:"type:varchar(100);not null"`                                  // Target tenant description
 }

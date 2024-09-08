@@ -12,13 +12,13 @@ func main() {
 	fmt.Println("Starting Server...")
 
 	// Connect to the database
-	db, err := database.DatabaseCon(database.NewDatabaseConfig())
+	err := database.DatabaseCon(database.NewDatabaseConfig())
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// Perform automatic database migrations
-	database.MigrateDB(db)
+	database.MigrateDB()
 
 	// Start the server
 	port := "8080"
