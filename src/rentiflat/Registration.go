@@ -43,6 +43,17 @@ func checkUserAlreadyExist(email string) (bool, error) {
 	return true, nil // User found
 }
 
+// @Summary Create a new owner
+// @Description Register a new owner in the system
+// @Tags owners
+// @Accept json
+// @Produce json
+// @Param owner body database.OwnerDetails true "Owner details"
+// @Success 201 {object} response "User created successfully"
+// @Failure 400 {string} string "Bad request"
+// @Failure 409 {string} string "Conflict"
+// @Failure 500 {string} string "Internal server error"
+// @Router /owners [post]
 func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 	var owner database.OwnerDetails
 
@@ -71,7 +82,7 @@ func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := database.GetDb().Create(&owner)
+	result := database.GetDb().Create(&owner).Commit()
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusConflict)
 		return
@@ -82,6 +93,16 @@ func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response{Message: "User created successfully"})
 }
 
+// @Summary Login
+// @Description Authenticate a user and return a JWT token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param loginDetail body database.LoginDetail true "Login credentials"
+// @Success 202 {object} map[string]string "JWT token"
+// @Failure 400 {string} string "Bad request"
+// @Failure 500 {string} string "Internal server error"
+// @Router /login [post]
 func Login(w http.ResponseWriter, r *http.Request) {
 	var loginDetail database.LoginDetail
 	var owner database.OwnerDetails

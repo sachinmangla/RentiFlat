@@ -27,6 +27,16 @@ func checkUserExist(userId int) (database.OwnerDetails, error) {
 	return owner, nil
 }
 
+// @Summary Create a new flat post
+// @Description Create a new flat listing
+// @Tags flats
+// @Accept json
+// @Produce json
+// @Param flat body database.FlatDetails true "Flat details"
+// @Success 201 {object} database.FlatDetails
+// @Failure 400 {string} string "Bad Request"
+// @Failure 500 {string} string "Internal Server Error"
+// @Router /flats [post]
 func RentiFlatCreatePost(w http.ResponseWriter, r *http.Request) {
 	var flat database.FlatDetails
 

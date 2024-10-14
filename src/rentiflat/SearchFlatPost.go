@@ -8,6 +8,16 @@ import (
 	"github.com/sachinmangla/rentiflat/database"
 )
 
+// @Summary Search for flats
+// @Description Search for flats within a specified radius of a given address
+// @Tags flats
+// @Accept json
+// @Produce json
+// @Param q query string true "Address to search around"
+// @Success 200 {array} database.FlatDetails
+// @Failure 400 {object} string "Bad Request"
+// @Failure 500 {object} string "Internal Server Error"
+// @Router /search [get]
 func SearchFlat(w http.ResponseWriter, r *http.Request) {
 	var flats []database.FlatDetails
 	address := r.URL.Query().Get("q")

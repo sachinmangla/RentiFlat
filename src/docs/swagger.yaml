@@ -1,0 +1,249 @@
+definitions:
+  database.FlatDetails:
+    type: object
+  database.LoginDetail:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  database.OwnerDetails:
+    type: object
+  database.UpdateFlatDetail:
+    properties:
+      address:
+        description: Address of the flat
+        type: string
+      looking_for:
+        type: string
+      rent:
+        description: Rent amount
+        type: number
+      security_deposit:
+        description: Security deposit amount
+        type: number
+    type: object
+  rentiflat.response:
+    properties:
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /flats:
+    post:
+      consumes:
+      - application/json
+      description: Create a new flat listing
+      parameters:
+      - description: Flat details
+        in: body
+        name: flat
+        required: true
+        schema:
+          $ref: '#/definitions/database.FlatDetails'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/database.FlatDetails'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new flat post
+      tags:
+      - flats
+  /flats/{flat_id}:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a flat post by its ID
+      parameters:
+      - description: Flat ID
+        in: path
+        name: flat_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully deleted
+          schema:
+            type: string
+        "400":
+          description: Invalid flat ID
+          schema:
+            type: string
+        "401":
+          description: Unauthorized
+          schema:
+            type: string
+        "403":
+          description: Not Authorized to delete the given flat detail
+          schema:
+            type: string
+        "404":
+          description: Entry not found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Delete a flat post
+      tags:
+      - flats
+    put:
+      consumes:
+      - application/json
+      description: Update details of a specific flat
+      parameters:
+      - description: Flat ID
+        in: path
+        name: flat_id
+        required: true
+        type: integer
+      - description: Updated flat details
+        in: body
+        name: updatedFlatDetail
+        required: true
+        schema:
+          $ref: '#/definitions/database.UpdateFlatDetail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.FlatDetails'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "403":
+          description: Forbidden
+          schema:
+            type: string
+        "404":
+          description: Not Found
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: Update flat details
+      tags:
+      - flats
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: loginDetail
+        required: true
+        schema:
+          $ref: '#/definitions/database.LoginDetail'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: JWT token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - auth
+  /owners:
+    post:
+      consumes:
+      - application/json
+      description: Register a new owner in the system
+      parameters:
+      - description: Owner details
+        in: body
+        name: owner
+        required: true
+        schema:
+          $ref: '#/definitions/database.OwnerDetails'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/rentiflat.response'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new owner
+      tags:
+      - owners
+  /search:
+    get:
+      consumes:
+      - application/json
+      description: Search for flats within a specified radius of a given address
+      parameters:
+      - description: Address to search around
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.FlatDetails'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search for flats
+      tags:
+      - flats
+swagger: "2.0"
