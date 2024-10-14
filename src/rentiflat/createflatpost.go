@@ -6,31 +6,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strconv"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sachinmangla/rentiflat/database"
 )
-
-func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
-	var owner database.OwnerDetails
-
-	err := json.NewDecoder(r.Body).Decode(&owner)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	result := database.GetDb().Create(&owner)
-	if result.Error != nil {
-		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(owner)
-}
 
 func checkUserExist(userId int) (database.OwnerDetails, error) {
 	var owner database.OwnerDetails
@@ -56,19 +35,19 @@ func RentiFlatCreatePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	userID := r.Header.Get("User-ID")
-	user, _ := strconv.Atoi(userID)
-	owner, err := checkUserExist(user)
+	userID := r.Context().Value("userID").(int)
+	owner, err := checkUserExist(userID)
 
 	if err != nil {
 		http.Error(w, "User-ID not found or incorrect", http.StatusBadRequest)
 		return
 	}
-	flat.OwnerID = uint(user)
+	flat.OwnerID = uint(userID)
 	flat.Owner = owner
 
 	lat, lon, err := GetCoordinate(flat.Address)
 	fmt.Print(lat, lon)
+
 	if err != nil {
 		http.Error(w, "Address not correct", http.StatusBadRequest)
 		return

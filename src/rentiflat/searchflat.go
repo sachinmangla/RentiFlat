@@ -36,13 +36,6 @@ func SearchFlat(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for i := range flats {
-		if err := db.Model(&flats[i]).Related(&flats[i].Owner, "OwnerID").Error; err != nil {
-			http.Error(w, "Error loading owner details", http.StatusInternalServerError)
-			return
-		}
-	}
-
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(flats)
 }

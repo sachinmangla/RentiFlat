@@ -13,7 +13,18 @@ func GetRoutes() *mux.Router {
 		w.Write([]byte("Welcome RentiFate"))
 	})
 	router.HandleFunc("/add-owner", rentiflat.OwnerDetailCreatePost)
-	router.HandleFunc("/post", rentiflat.RentiFlatCreatePost)
-	router.HandleFunc("/search", rentiflat.SearchFlat)
+	router.HandleFunc("/login", rentiflat.Login)
+	router.HandleFunc("/post", func(w http.ResponseWriter, r *http.Request) {
+		rentiflat.Authenticate(http.HandlerFunc(rentiflat.RentiFlatCreatePost)).ServeHTTP(w, r)
+	})
+	router.HandleFunc("/search", func(w http.ResponseWriter, r *http.Request) {
+		rentiflat.Authenticate(http.HandlerFunc(rentiflat.SearchFlat)).ServeHTTP(w, r)
+	})
+	router.HandleFunc("/update/{flat_id}", func(w http.ResponseWriter, r *http.Request) {
+		rentiflat.Authenticate(http.HandlerFunc(rentiflat.UpdateFlatDetail)).ServeHTTP(w, r)
+	})
+	router.HandleFunc("/delete/{flat_id}", func(w http.ResponseWriter, r *http.Request) {
+		rentiflat.Authenticate(http.HandlerFunc(rentiflat.DeleteFlatPost)).ServeHTTP(w, r)
+	})
 	return router
 }

@@ -7,9 +7,10 @@ import (
 // OwnerDetails represents the details of an owner
 type OwnerDetails struct {
 	gorm.Model
-	Name  string `json:"name" gorm:"type:varchar(100);not null"`         // Added type for better database control
-	Email string `json:"email" gorm:"type:varchar(100);not null;unique"` // Added type and unique constraints
-	Phone string `json:"phone" gorm:"type:varchar(20);not null"`         // Added type for better database control
+	Name     string `json:"name" gorm:"type:varchar(100);not null"`         // Added type for better database control
+	Email    string `json:"email" gorm:"type:varchar(100);not null;unique"` // Added type and unique constraints
+	Phone    string `json:"phone" gorm:"type:varchar(20);not null"`         // Added type for better database control
+	Password string `json:"password" gorm:"type:varchar(100);not null"`
 }
 
 // Coordinates represents latitude and longitude values
@@ -32,4 +33,16 @@ type FlatDetails struct {
 	Rent            float64      `json:"rent" gorm:"type:decimal(10,2);not null"`                                        // Rent amount
 	SecurityDeposit float64      `json:"security_deposit" gorm:"type:decimal(10,2);not null"`                            // Security deposit amount
 	LookingFor      string       `json:"looking_for" gorm:"type:varchar(100);not null"`                                  // Target tenant description
+}
+
+type LoginDetail struct {
+	Email    string `json: "email"`
+	Password string `json: "password"`
+}
+
+type UpdateFlatDetail struct {
+	Address         string  `json:"address,omitempty"`          // Address of the flat
+	Rent            float64 `json:"rent,omitempty"`             // Rent amount
+	SecurityDeposit float64 `json:"security_deposit,omitempty"` // Security deposit amount
+	LookingFor      string  `json:"looking_for,omitempty"`
 }
