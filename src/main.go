@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/sachinmangla/rentiflat/config"
 	"github.com/sachinmangla/rentiflat/database"
 	"github.com/sachinmangla/rentiflat/server"
 )
@@ -11,8 +12,13 @@ import (
 func main() {
 	fmt.Println("Starting Server...")
 
+	err := config.LoadEnv()
+	if err != nil {
+		log.Fatalf("Failed to load environment variables: %v", err)
+	}
+
 	// Connect to the database
-	err := database.DatabaseCon(database.NewDatabaseConfig())
+	err = database.DatabaseCon(database.NewDatabaseConfig())
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}

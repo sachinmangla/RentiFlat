@@ -5,9 +5,10 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/sachinmangla/rentiflat/config"
 )
 
-var jwtKey = []byte("my_secret_key")
+var jwtKey = []byte(config.GetEnv("SECRET_KEY", ""))
 
 type Claims struct {
 	UserID int `json:"user_id"`
