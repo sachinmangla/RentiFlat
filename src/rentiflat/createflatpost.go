@@ -33,6 +33,7 @@ func checkUserExist(userId int) (database.OwnerDetails, error) {
 // @Accept json
 // @Produce json
 // @Param flat body database.FlatDetails true "Flat details"
+// @Param Authorization header string true "Bearer {token}"
 // @Success 201 {object} database.FlatDetails
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"

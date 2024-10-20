@@ -77,7 +77,7 @@ definitions:
 info:
   contact: {}
 paths:
-  /add-owner:
+  /add-user:
     post:
       consumes:
       - application/json
@@ -110,37 +110,7 @@ paths:
             type: string
       summary: Create a new owner
       tags:
-      - owners
-  /add-user:
-    post:
-      consumes:
-      - application/json
-      description: Create a new flat listing
-      parameters:
-      - description: Flat details
-        in: body
-        name: flat
-        required: true
-        schema:
-          $ref: '#/definitions/database.FlatDetails'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/database.FlatDetails'
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Create a new flat post
-      tags:
-      - flats
+      - add-user
   /delete/{flat_id}:
     delete:
       consumes:
@@ -152,6 +122,11 @@ paths:
         name: flat_id
         required: true
         type: integer
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -179,8 +154,6 @@ paths:
           description: Internal Server Error
           schema:
             type: string
-      security:
-      - ApiKeyAuth: []
       summary: Delete a flat post
       tags:
       - flats
@@ -227,6 +200,11 @@ paths:
         name: q
         required: true
         type: string
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -264,6 +242,11 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/database.UpdateFlatDetail'
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:

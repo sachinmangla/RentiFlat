@@ -14,6 +14,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param q query string true "Address to search around"
+// @Param Authorization header string true "Bearer {token}"
 // @Success 200 {array} database.FlatDetails
 // @Failure 400 {object} string "Bad Request"
 // @Failure 500 {object} string "Internal Server Error"

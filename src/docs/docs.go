@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/add-owner": {
+        "/add-user": {
             "post": {
                 "description": "Register a new owner in the system",
                 "consumes": [
@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "owners"
+                    "add-user"
                 ],
                 "summary": "Create a new owner",
                 "parameters": [
@@ -67,59 +67,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/add-user": {
-            "post": {
-                "description": "Create a new flat listing",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "flats"
-                ],
-                "summary": "Create a new flat post",
-                "parameters": [
-                    {
-                        "description": "Flat details",
-                        "name": "flat",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/database.FlatDetails"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/database.FlatDetails"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/delete/{flat_id}": {
             "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "Deletes a flat post by its ID",
                 "consumes": [
                     "application/json"
@@ -137,6 +86,13 @@ const docTemplate = `{
                         "description": "Flat ID",
                         "name": "flat_id",
                         "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
                         "required": true
                     }
                 ],
@@ -249,6 +205,13 @@ const docTemplate = `{
                         "name": "q",
                         "in": "query",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -310,6 +273,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/database.UpdateFlatDetail"
                         }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {

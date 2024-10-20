@@ -16,7 +16,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param flat_id path int true "Flat ID"
-// @Security ApiKeyAuth
+// @Param Authorization header string true "Bearer {token}"
 // @Success 200 {string} string "Successfully deleted"
 // @Failure 400 {string} string "Invalid flat ID"
 // @Failure 401 {string} string "Unauthorized"

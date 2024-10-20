@@ -17,6 +17,7 @@ import (
 // @Produce json
 // @Param flat_id path int true "Flat ID"
 // @Param updatedFlatDetail body database.UpdateFlatDetail true "Updated flat details"
+// @Param Authorization header string true "Bearer {token}"
 // @Success 200 {object} database.FlatDetails
 // @Failure 400 {string} string "Bad Request"
 // @Failure 403 {string} string "Forbidden"

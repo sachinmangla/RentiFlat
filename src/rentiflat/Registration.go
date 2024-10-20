@@ -45,7 +45,7 @@ func checkUserAlreadyExist(email string) (bool, error) {
 
 // @Summary Create a new owner
 // @Description Register a new owner in the system
-// @Tags owners
+// @Tags add-user
 // @Accept json
 // @Produce json
 // @Param owner body database.OwnerDetails true "Owner details"
@@ -53,7 +53,7 @@ func checkUserAlreadyExist(email string) (bool, error) {
 // @Failure 400 {string} string "Bad request"
 // @Failure 409 {string} string "Conflict"
 // @Failure 500 {string} string "Internal server error"
-// @Router /add-owner [post]
+// @Router /add-user [post]
 func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 	var owner database.OwnerDetails
 
