@@ -1,5 +1,38 @@
 definitions:
+  database.Coordinates:
+    properties:
+      latitude:
+        description: Latitude value
+        type: number
+      longitude:
+        description: Longitude value
+        type: number
+    type: object
   database.FlatDetails:
+    properties:
+      address:
+        description: Address of the flat
+        type: string
+      location:
+        allOf:
+        - $ref: '#/definitions/database.Coordinates'
+        description: Embedded coordinates
+      looking_for:
+        description: Target tenant description
+        type: string
+      owner:
+        allOf:
+        - $ref: '#/definitions/database.OwnerDetails'
+        description: Owner relationship
+      owner_id:
+        description: Foreign key to OwnerDetails
+        type: integer
+      rent:
+        description: Rent amount
+        type: number
+      security_deposit:
+        description: Security deposit amount
+        type: number
     type: object
   database.LoginDetail:
     properties:
@@ -9,6 +42,18 @@ definitions:
         type: string
     type: object
   database.OwnerDetails:
+    properties:
+      email:
+        description: Added type and unique constraints
+        type: string
+      name:
+        description: Added type for better database control
+        type: string
+      password:
+        type: string
+      phone:
+        description: Added type for better database control
+        type: string
     type: object
   database.UpdateFlatDetail:
     properties:
@@ -32,7 +77,41 @@ definitions:
 info:
   contact: {}
 paths:
-  /flats:
+  /add-owner:
+    post:
+      consumes:
+      - application/json
+      description: Register a new owner in the system
+      parameters:
+      - description: Owner details
+        in: body
+        name: owner
+        required: true
+        schema:
+          $ref: '#/definitions/database.OwnerDetails'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User created successfully
+          schema:
+            $ref: '#/definitions/rentiflat.response'
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "409":
+          description: Conflict
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Create a new owner
+      tags:
+      - owners
+  /add-user:
     post:
       consumes:
       - application/json
@@ -62,7 +141,7 @@ paths:
       summary: Create a new flat post
       tags:
       - flats
-  /flats/{flat_id}:
+  /delete/{flat_id}:
     delete:
       consumes:
       - application/json
@@ -105,6 +184,70 @@ paths:
       summary: Delete a flat post
       tags:
       - flats
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user and return a JWT token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: loginDetail
+        required: true
+        schema:
+          $ref: '#/definitions/database.LoginDetail'
+      produces:
+      - application/json
+      responses:
+        "202":
+          description: JWT token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Login
+      tags:
+      - auth
+  /search:
+    get:
+      consumes:
+      - application/json
+      description: Search for flats within a specified radius of a given address
+      parameters:
+      - description: Address to search around
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.FlatDetails'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Search for flats
+      tags:
+      - flats
+  /update/{flat_id}:
     put:
       consumes:
       - application/json
@@ -147,103 +290,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Update flat details
-      tags:
-      - flats
-  /login:
-    post:
-      consumes:
-      - application/json
-      description: Authenticate a user and return a JWT token
-      parameters:
-      - description: Login credentials
-        in: body
-        name: loginDetail
-        required: true
-        schema:
-          $ref: '#/definitions/database.LoginDetail'
-      produces:
-      - application/json
-      responses:
-        "202":
-          description: JWT token
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad request
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Login
-      tags:
-      - auth
-  /owners:
-    post:
-      consumes:
-      - application/json
-      description: Register a new owner in the system
-      parameters:
-      - description: Owner details
-        in: body
-        name: owner
-        required: true
-        schema:
-          $ref: '#/definitions/database.OwnerDetails'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: User created successfully
-          schema:
-            $ref: '#/definitions/rentiflat.response'
-        "400":
-          description: Bad request
-          schema:
-            type: string
-        "409":
-          description: Conflict
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
-      summary: Create a new owner
-      tags:
-      - owners
-  /search:
-    get:
-      consumes:
-      - application/json
-      description: Search for flats within a specified radius of a given address
-      parameters:
-      - description: Address to search around
-        in: query
-        name: q
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/database.FlatDetails'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            type: string
-        "500":
-          description: Internal Server Error
-          schema:
-            type: string
-      summary: Search for flats
       tags:
       - flats
 swagger: "2.0"

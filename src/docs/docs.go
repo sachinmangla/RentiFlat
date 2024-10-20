@@ -15,7 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/flats": {
+        "/add-owner": {
+            "post": {
+                "description": "Register a new owner in the system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "owners"
+                ],
+                "summary": "Create a new owner",
+                "parameters": [
+                    {
+                        "description": "Owner details",
+                        "name": "owner",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.OwnerDetails"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/rentiflat.response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-user": {
             "post": {
                 "description": "Create a new flat listing",
                 "consumes": [
@@ -61,75 +113,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/flats/{flat_id}": {
-            "put": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Update details of a specific flat",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "flats"
-                ],
-                "summary": "Update flat details",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Flat ID",
-                        "name": "flat_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated flat details",
-                        "name": "updatedFlatDetail",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/database.UpdateFlatDetail"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/database.FlatDetails"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
+        "/delete/{flat_id}": {
             "delete": {
                 "security": [
                     {
@@ -245,58 +229,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/owners": {
-            "post": {
-                "description": "Register a new owner in the system",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "owners"
-                ],
-                "summary": "Create a new owner",
-                "parameters": [
-                    {
-                        "description": "Owner details",
-                        "name": "owner",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/database.OwnerDetails"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "User created successfully",
-                        "schema": {
-                            "$ref": "#/definitions/rentiflat.response"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/search": {
             "get": {
                 "description": "Search for flats within a specified radius of a given address",
@@ -343,11 +275,132 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/update/{flat_id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update details of a specific flat",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "flats"
+                ],
+                "summary": "Update flat details",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Flat ID",
+                        "name": "flat_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Updated flat details",
+                        "name": "updatedFlatDetail",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.UpdateFlatDetail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/database.FlatDetails"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "database.Coordinates": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "description": "Latitude value",
+                    "type": "number"
+                },
+                "longitude": {
+                    "description": "Longitude value",
+                    "type": "number"
+                }
+            }
+        },
         "database.FlatDetails": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "address": {
+                    "description": "Address of the flat",
+                    "type": "string"
+                },
+                "location": {
+                    "description": "Embedded coordinates",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/database.Coordinates"
+                        }
+                    ]
+                },
+                "looking_for": {
+                    "description": "Target tenant description",
+                    "type": "string"
+                },
+                "owner": {
+                    "description": "Owner relationship",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/database.OwnerDetails"
+                        }
+                    ]
+                },
+                "owner_id": {
+                    "description": "Foreign key to OwnerDetails",
+                    "type": "integer"
+                },
+                "rent": {
+                    "description": "Rent amount",
+                    "type": "number"
+                },
+                "security_deposit": {
+                    "description": "Security deposit amount",
+                    "type": "number"
+                }
+            }
         },
         "database.LoginDetail": {
             "type": "object",
@@ -361,7 +414,24 @@ const docTemplate = `{
             }
         },
         "database.OwnerDetails": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "Added type and unique constraints",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "Added type for better database control",
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "description": "Added type for better database control",
+                    "type": "string"
+                }
+            }
         },
         "database.UpdateFlatDetail": {
             "type": "object",

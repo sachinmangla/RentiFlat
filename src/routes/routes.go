@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	_ "github.com/sachinmangla/rentiflat/docs"
 	"github.com/sachinmangla/rentiflat/rentiflat"
 	httpSwagger "github.com/swaggo/http-swagger"
-	_ "github.com/sachinmangla/rentiflat/docs"
 )
 
 func GetRoutes() *mux.Router {
@@ -18,11 +18,11 @@ func GetRoutes() *mux.Router {
 		w.Write([]byte("Welcome RentiFlat"))
 	}).Methods("GET")
 
-	router.HandleFunc("/add-owner", rentiflat.OwnerDetailCreatePost).Methods("POST")
+	router.HandleFunc("/add-user", rentiflat.OwnerDetailCreatePost).Methods("POST")
 
 	router.HandleFunc("/login", rentiflat.Login).Methods("POST")
 
-	router.HandleFunc("/post", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/add-flat", func(w http.ResponseWriter, r *http.Request) {
 		rentiflat.Authenticate(http.HandlerFunc(rentiflat.RentiFlatCreatePost)).ServeHTTP(w, r)
 	}).Methods("POST")
 

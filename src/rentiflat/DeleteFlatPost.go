@@ -23,7 +23,7 @@ import (
 // @Failure 403 {string} string "Not Authorized to delete the given flat detail"
 // @Failure 404 {string} string "Entry not found"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /flats/{flat_id} [delete]
+// @Router /delete/{flat_id} [delete]
 func DeleteFlatPost(w http.ResponseWriter, r *http.Request) {
 	var flatDetail database.FlatDetails
 

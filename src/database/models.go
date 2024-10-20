@@ -6,11 +6,11 @@ import (
 
 // OwnerDetails represents the details of an owner
 type OwnerDetails struct {
-	gorm.Model
-	Name     string `json:"name" gorm:"type:varchar(100);not null"`         // Added type for better database control
-	Email    string `json:"email" gorm:"type:varchar(100);not null;unique"` // Added type and unique constraints
-	Phone    string `json:"phone" gorm:"type:varchar(20);not null"`         // Added type for better database control
-	Password string `json:"password" gorm:"type:varchar(100);not null"`
+	gorm.Model `swaggerignore:"true"`
+	Name       string `json:"name" gorm:"type:varchar(100);not null"`         // Added type for better database control
+	Email      string `json:"email" gorm:"type:varchar(100);not null;unique"` // Added type and unique constraints
+	Phone      string `json:"phone" gorm:"type:varchar(20);not null"`         // Added type for better database control
+	Password   string `json:"password" gorm:"type:varchar(100);not null"`
 }
 
 // Coordinates represents latitude and longitude values
@@ -25,7 +25,7 @@ type Coordinates struct {
 
 // FlatDetails represents the details of a flat
 type FlatDetails struct {
-	gorm.Model
+	gorm.Model      `swaggerignore:"true"`
 	OwnerID         uint         `json:"owner_id" gorm:"not null"`                                                       // Foreign key to OwnerDetails
 	Owner           OwnerDetails `json:"owner" gorm:"foreignkey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"` // Owner relationship
 	Location        Coordinates  `json:"location" gorm:"embedded;embeddedPrefix:location_"`                              // Embedded coordinates

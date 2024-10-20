@@ -53,7 +53,7 @@ func checkUserAlreadyExist(email string) (bool, error) {
 // @Failure 400 {string} string "Bad request"
 // @Failure 409 {string} string "Conflict"
 // @Failure 500 {string} string "Internal server error"
-// @Router /owners [post]
+// @Router /add-owner [post]
 func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 	var owner database.OwnerDetails
 

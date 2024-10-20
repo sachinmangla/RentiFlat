@@ -23,7 +23,7 @@ import (
 // @Failure 404 {string} string "Not Found"
 // @Failure 500 {string} string "Internal Server Error"
 // @Security ApiKeyAuth
-// @Router /flats/{flat_id} [put]
+// @Router /update/{flat_id} [put]
 func UpdateFlatDetail(w http.ResponseWriter, r *http.Request) {
 	var flatDetail database.FlatDetails
 	var updatedFlatDetail database.UpdateFlatDetail
