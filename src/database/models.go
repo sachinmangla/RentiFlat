@@ -36,8 +36,8 @@ type FlatDetails struct {
 }
 
 type LoginDetail struct {
-	Email    string `json: "email"`
-	Password string `json: "password"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
 type UpdateFlatDetail struct {

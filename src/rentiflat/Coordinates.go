@@ -21,10 +21,12 @@ func GetCoordinate(addressQuery string) (float64, float64, error) {
 
 	// Send HTTP GET request to OSM API
 	response, err := http.Get(url)
+
 	if err != nil {
 		fmt.Println("Error:", err)
 		return 0, 0, fmt.Errorf(err.Error())
 	}
+
 	defer response.Body.Close()
 
 	// Parse the JSON response
