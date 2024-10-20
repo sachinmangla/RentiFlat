@@ -34,10 +34,10 @@ func checkUserExist(userId int) (database.OwnerDetails, error) {
 // @Produce json
 // @Param flat body database.FlatDetails true "Flat details"
 // @Param Authorization header string true "Bearer {token}"
-// @Success 201 {object} database.FlatDetails
+// @Success 201 {object} database.Response "Flat details created successfully"
 // @Failure 400 {string} string "Bad Request"
 // @Failure 500 {string} string "Internal Server Error"
-// @Router /add-user [post]
+// @Router /add-flat [post]
 func RentiFlatCreatePost(w http.ResponseWriter, r *http.Request) {
 	var flat database.FlatDetails
 
@@ -73,7 +73,9 @@ func RentiFlatCreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := database.Response{Id: flat.ID, Message: "Flat details created successfully"}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(flat)
+	json.NewEncoder(w).Encode(response)
 }

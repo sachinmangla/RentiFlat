@@ -15,6 +15,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/add-flat": {
+            "post": {
+                "description": "Create a new flat listing",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "flats"
+                ],
+                "summary": "Create a new flat post",
+                "parameters": [
+                    {
+                        "description": "Flat details",
+                        "name": "flat",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/database.FlatDetails"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Flat details created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/database.Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/add-user": {
             "post": {
                 "description": "Register a new owner in the system",
@@ -43,7 +96,7 @@ const docTemplate = `{
                     "201": {
                         "description": "User created successfully",
                         "schema": {
-                            "$ref": "#/definitions/rentiflat.response"
+                            "$ref": "#/definitions/database.Response"
                         }
                     },
                     "400": {
@@ -98,9 +151,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successfully deleted",
+                        "description": "Flat details deleted successfully",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/database.Response"
                         }
                     },
                     "400": {
@@ -162,12 +215,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "202": {
-                        "description": "JWT token",
+                        "description": "Accepted",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/database.JwtToken"
                         }
                     },
                     "400": {
@@ -284,9 +334,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Flat details updated successfully",
                         "schema": {
-                            "$ref": "#/definitions/database.FlatDetails"
+                            "$ref": "#/definitions/database.Response"
                         }
                     },
                     "400": {
@@ -350,18 +400,6 @@ const docTemplate = `{
                     "description": "Target tenant description",
                     "type": "string"
                 },
-                "owner": {
-                    "description": "Owner relationship",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/database.OwnerDetails"
-                        }
-                    ]
-                },
-                "owner_id": {
-                    "description": "Foreign key to OwnerDetails",
-                    "type": "integer"
-                },
                 "rent": {
                     "description": "Rent amount",
                     "type": "number"
@@ -369,6 +407,14 @@ const docTemplate = `{
                 "security_deposit": {
                     "description": "Security deposit amount",
                     "type": "number"
+                }
+            }
+        },
+        "database.JwtToken": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
                 }
             }
         },
@@ -403,6 +449,17 @@ const docTemplate = `{
                 }
             }
         },
+        "database.Response": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "database.UpdateFlatDetail": {
             "type": "object",
             "properties": {
@@ -420,14 +477,6 @@ const docTemplate = `{
                 "security_deposit": {
                     "description": "Security deposit amount",
                     "type": "number"
-                }
-            }
-        },
-        "rentiflat.response": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
                 }
             }
         }

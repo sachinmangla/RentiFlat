@@ -26,13 +26,13 @@ type Coordinates struct {
 // FlatDetails represents the details of a flat
 type FlatDetails struct {
 	gorm.Model      `swaggerignore:"true"`
-	OwnerID         uint         `json:"owner_id" gorm:"not null"`                                                       // Foreign key to OwnerDetails
-	Owner           OwnerDetails `json:"owner" gorm:"foreignkey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"` // Owner relationship
-	Location        Coordinates  `json:"location" gorm:"embedded;embeddedPrefix:location_"`                              // Embedded coordinates
-	Address         string       `json:"address" gorm:"type:varchar(255);not null"`                                      // Address of the flat
-	Rent            float64      `json:"rent" gorm:"type:decimal(10,2);not null"`                                        // Rent amount
-	SecurityDeposit float64      `json:"security_deposit" gorm:"type:decimal(10,2);not null"`                            // Security deposit amount
-	LookingFor      string       `json:"looking_for" gorm:"type:varchar(100);not null"`                                  // Target tenant description
+	OwnerID         uint         `json:"owner_id" gorm:"not null" swaggerignore:"true"`                                                       // Foreign key to OwnerDetails
+	Owner           OwnerDetails `json:"owner" swaggerignore:"true" gorm:"foreignkey:OwnerID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"` // Owner relationship
+	Location        Coordinates  `json:"location" gorm:"embedded;embeddedPrefix:location_"`                                                   // Embedded coordinates
+	Address         string       `json:"address" gorm:"type:varchar(255);not null"`                                                           // Address of the flat
+	Rent            float64      `json:"rent" gorm:"type:decimal(10,2);not null"`                                                             // Rent amount
+	SecurityDeposit float64      `json:"security_deposit" gorm:"type:decimal(10,2);not null"`                                                 // Security deposit amount
+	LookingFor      string       `json:"looking_for" gorm:"type:varchar(100);not null"`                                                       // Target tenant description
 }
 
 type LoginDetail struct {
@@ -45,4 +45,13 @@ type UpdateFlatDetail struct {
 	Rent            float64 `json:"rent,omitempty"`             // Rent amount
 	SecurityDeposit float64 `json:"security_deposit,omitempty"` // Security deposit amount
 	LookingFor      string  `json:"looking_for,omitempty"`
+}
+
+type Response struct {
+	Id      uint   `json:"id"`
+	Message string `json:"message"`
+}
+
+type JwtToken struct {
+	Token string `json:"token"`
 }

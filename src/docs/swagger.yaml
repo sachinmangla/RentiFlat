@@ -20,19 +20,17 @@ definitions:
       looking_for:
         description: Target tenant description
         type: string
-      owner:
-        allOf:
-        - $ref: '#/definitions/database.OwnerDetails'
-        description: Owner relationship
-      owner_id:
-        description: Foreign key to OwnerDetails
-        type: integer
       rent:
         description: Rent amount
         type: number
       security_deposit:
         description: Security deposit amount
         type: number
+    type: object
+  database.JwtToken:
+    properties:
+      token:
+        type: string
     type: object
   database.LoginDetail:
     properties:
@@ -55,6 +53,13 @@ definitions:
         description: Added type for better database control
         type: string
     type: object
+  database.Response:
+    properties:
+      id:
+        type: integer
+      message:
+        type: string
+    type: object
   database.UpdateFlatDetail:
     properties:
       address:
@@ -69,14 +74,44 @@ definitions:
         description: Security deposit amount
         type: number
     type: object
-  rentiflat.response:
-    properties:
-      message:
-        type: string
-    type: object
 info:
   contact: {}
 paths:
+  /add-flat:
+    post:
+      consumes:
+      - application/json
+      description: Create a new flat listing
+      parameters:
+      - description: Flat details
+        in: body
+        name: flat
+        required: true
+        schema:
+          $ref: '#/definitions/database.FlatDetails'
+      - description: Bearer {token}
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Flat details created successfully
+          schema:
+            $ref: '#/definitions/database.Response'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new flat post
+      tags:
+      - flats
   /add-user:
     post:
       consumes:
@@ -95,7 +130,7 @@ paths:
         "201":
           description: User created successfully
           schema:
-            $ref: '#/definitions/rentiflat.response'
+            $ref: '#/definitions/database.Response'
         "400":
           description: Bad request
           schema:
@@ -131,9 +166,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: Successfully deleted
+          description: Flat details deleted successfully
           schema:
-            type: string
+            $ref: '#/definitions/database.Response'
         "400":
           description: Invalid flat ID
           schema:
@@ -173,11 +208,9 @@ paths:
       - application/json
       responses:
         "202":
-          description: JWT token
+          description: Accepted
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/database.JwtToken'
         "400":
           description: Bad request
           schema:
@@ -251,9 +284,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Flat details updated successfully
           schema:
-            $ref: '#/definitions/database.FlatDetails'
+            $ref: '#/definitions/database.Response'
         "400":
           description: Bad Request
           schema:

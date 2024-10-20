@@ -18,7 +18,7 @@ import (
 // @Param flat_id path int true "Flat ID"
 // @Param updatedFlatDetail body database.UpdateFlatDetail true "Updated flat details"
 // @Param Authorization header string true "Bearer {token}"
-// @Success 200 {object} database.FlatDetails
+// @Success 200 {object} database.Response "Flat details updated successfully"
 // @Failure 400 {string} string "Bad Request"
 // @Failure 403 {string} string "Forbidden"
 // @Failure 404 {string} string "Not Found"
@@ -75,7 +75,9 @@ func UpdateFlatDetail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := database.Response{Id: flatDetail.ID, Message: "Flat details updated successfully"}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(flatDetail)
+	json.NewEncoder(w).Encode(response)
 }

@@ -1,6 +1,7 @@
 package rentiflat
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"strconv"
@@ -17,7 +18,7 @@ import (
 // @Produce json
 // @Param flat_id path int true "Flat ID"
 // @Param Authorization header string true "Bearer {token}"
-// @Success 200 {string} string "Successfully deleted"
+// @Success 200 {object} database.Response "Flat details deleted successfully"
 // @Failure 400 {string} string "Invalid flat ID"
 // @Failure 401 {string} string "Unauthorized"
 // @Failure 403 {string} string "Not Authorized to delete the given flat detail"
@@ -62,7 +63,9 @@ func DeleteFlatPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := database.Response{Id: flatDetail.ID, Message: "Flat details deleted successfully"}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	log.Println("Successfully deleted flat details for ID:", id)
+	json.NewEncoder(w).Encode(response)
 }

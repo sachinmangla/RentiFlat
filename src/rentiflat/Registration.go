@@ -3,17 +3,12 @@ package rentiflat
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/jinzhu/gorm"
 	"github.com/sachinmangla/rentiflat/database"
 	"golang.org/x/crypto/bcrypt"
 )
-
-type response struct {
-	Message string `json:"message"`
-}
 
 func HashPassword(password string) (string, error) {
 	// Generate a hashed password
@@ -31,8 +26,11 @@ func VerifyPassword(hashedPassword, password string) error {
 func checkUserAlreadyExist(email string) (bool, error) {
 	var owner database.OwnerDetails
 
+	// Get a new database connection
+	db := database.GetDb()
+
 	// Perform the database query
-	result := database.GetDb().Where("email = ?", email).First(&owner)
+	result := db.Where("EMAIL = ?", email).First(&owner)
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 			return false, nil // User not found
@@ -49,7 +47,7 @@ func checkUserAlreadyExist(email string) (bool, error) {
 // @Accept json
 // @Produce json
 // @Param owner body database.OwnerDetails true "Owner details"
-// @Success 201 {object} response "User created successfully"
+// @Success 201 {object} database.Response "User created successfully"
 // @Failure 400 {string} string "Bad request"
 // @Failure 409 {string} string "Conflict"
 // @Failure 500 {string} string "Internal server error"
@@ -82,15 +80,17 @@ func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result := database.GetDb().Create(&owner).Commit()
+	result := database.GetDb().Create(&owner)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusConflict)
 		return
 	}
 
+	response := database.Response{Id: owner.ID, Message: "User created successfully"}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response{Message: "User created successfully"})
+	json.NewEncoder(w).Encode(response)
 }
 
 // @Summary Login
@@ -99,7 +99,7 @@ func OwnerDetailCreatePost(w http.ResponseWriter, r *http.Request) {
 // @Accept json
 // @Produce json
 // @Param loginDetail body database.LoginDetail true "Login credentials"
-// @Success 202 {object} map[string]string "JWT token"
+// @Success 202 {object} database.JwtToken
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
 // @Router /login [post]
@@ -133,7 +133,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	} else {
-		fmt.Fprintf(w, `{"token":"%s"}`, token)
+		jwtToken := database.JwtToken{Token: token}
+		json.NewEncoder(w).Encode(jwtToken)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
