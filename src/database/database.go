@@ -66,3 +66,7 @@ func MigrateDB() {
 func GetDb() *gorm.DB {
 	return Db
 }
+
+func CheckDBConnection() error {
+	return Db.DB().Ping()
+}
