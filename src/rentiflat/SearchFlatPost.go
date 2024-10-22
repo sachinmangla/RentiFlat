@@ -34,15 +34,11 @@ func SearchFlat(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := `
-        SELECT fd.*, 
-               od.id AS "owner.id", 
-               od.name AS "owner.name", 
-               od.email AS "owner.email", 
-               od.phone AS "owner.phone"
+        SELECT fd.*, od.*
         FROM flat_details fd
         JOIN owner_details od ON fd.owner_id = od.id
-        WHERE earth_box(ll_to_earth(?, ?), ?) @> ll_to_earth(fd.location_latitude, fd.location_longitude);
-    `
+        WHERE earth_box(ll_to_earth(?, ?), ?) @> ll_to_earth(fd.latitude, fd.longitude);
+    	`
 
 	db := database.GetDb()
 
