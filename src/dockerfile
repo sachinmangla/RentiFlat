@@ -11,6 +11,12 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
+# Install swag
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+# Run swagger init
+RUN swag init
+
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o rentiflatapp .
 
@@ -22,6 +28,9 @@ WORKDIR /app
 
 # Copy the binary from the builder stage
 COPY --from=builder /app/rentiflatapp .
+
+# Copy Swagger files (if needed in the final image)
+COPY --from=builder /app/docs ./docs
 
 # Command to run the binary
 CMD ["./rentiflatapp"]

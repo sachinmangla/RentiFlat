@@ -28,6 +28,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=Sac@2121
       - POSTGRES_DB=rentiflat
+    volumes:
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     networks:
       - rentiflat-network
 
